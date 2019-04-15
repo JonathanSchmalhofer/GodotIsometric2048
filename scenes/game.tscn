@@ -1,0 +1,61 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://scenes/game.gd" type="Script" id=1]
+[ext_resource path="res://scenes/board.tscn" type="PackedScene" id=2]
+[ext_resource path="res://addons/swipe-detector/swipe_detector.gd" type="Script" id=3]
+[ext_resource path="res://addons/swipe-detector/icon.png" type="Texture" id=4]
+[ext_resource path="res://scenes/admob.tscn" type="PackedScene" id=5]
+[ext_resource path="res://sound/background/A tricky puzzle.ogg" type="AudioStream" id=6]
+
+[node name="game" type="Node2D"]
+position = Vector2( 270, 540 )
+script = ExtResource( 1 )
+
+[node name="board" parent="." instance=ExtResource( 2 )]
+
+[node name="SwipeDetector" type="Node" parent="."]
+editor/display_folded = true
+script = ExtResource( 3 )
+__meta__ = {
+"_editor_icon": ExtResource( 4 )
+}
+
+[node name="Values" type="VBoxContainer" parent="SwipeDetector"]
+editor/display_folded = true
+margin_top = 790.0
+margin_right = 208.0
+margin_bottom = 842.0
+
+[node name="Direction" type="Label" parent="SwipeDetector/Values"]
+margin_right = 208.0
+margin_bottom = 14.0
+text = "<Swipe>"
+
+[node name="Angle" type="HBoxContainer" parent="SwipeDetector/Values"]
+margin_top = 18.0
+margin_right = 208.0
+margin_bottom = 32.0
+
+[node name="Label" type="Label" parent="SwipeDetector/Values/Angle"]
+margin_right = 40.0
+margin_bottom = 14.0
+text = "Angle:"
+align = 2
+
+[node name="Value" type="Label" parent="SwipeDetector/Values/Angle"]
+margin_left = 44.0
+margin_right = 96.0
+margin_bottom = 14.0
+text = "<Angle>"
+
+[node name="admob" parent="." instance=ExtResource( 5 )]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 6 )
+volume_db = -10.0
+autoplay = true
+
+[connection signal="swipe_ended" from="SwipeDetector" to="." method="_on_SwipeDetector_swipe_ended"]
+[connection signal="swipe_started" from="SwipeDetector" to="." method="_on_SwipeDetector_swipe_started"]
+[connection signal="swipe_updated" from="SwipeDetector" to="." method="_on_SwipeDetector_swipe_updated"]
+[connection signal="swiped" from="SwipeDetector" to="." method="_on_SwipeDetector_swiped"]

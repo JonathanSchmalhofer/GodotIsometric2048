@@ -1,0 +1,16 @@
+[gd_resource type="TileSet" load_steps=2 format=2]
+
+[ext_resource path="res://graphic/ground/voxelTile_55.png" type="Texture" id=1]
+
+[resource]
+0/name = "voxelTile_55"
+0/texture = ExtResource( 1 )
+0/tex_offset = Vector2( 0, 0 )
+0/modulate = Color( 1, 1, 1, 1 )
+0/region = Rect2( 0, 0, 111, 128 )
+0/tile_mode = 0
+0/occluder_offset = Vector2( 55.5, 64 )
+0/navigation_offset = Vector2( 55.5, 64 )
+0/shapes = [  ]
+0/z_index = 0
+

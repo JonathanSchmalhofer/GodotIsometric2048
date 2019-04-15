@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scenes/admob.gd" type="Script" id=1]
+
+[node name="admob" type="Node2D"]
+position = Vector2( 270, 380 )
+script = ExtResource( 1 )
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="BtnBanner" type="Button" parent="CanvasLayer"]
+margin_left = 190.0
+margin_top = 280.0
+margin_right = 371.0
+margin_bottom = 300.0
+disabled = true
+toggle_mode = true
+text = "Show/Hide Banner"
+
+[node name="BtnInterstitial" type="Button" parent="CanvasLayer"]
+margin_left = 190.0
+margin_top = 310.0
+margin_right = 371.0
+margin_bottom = 330.0
+disabled = true
+toggle_mode = true
+text = "Show Interstitial"
+
+[node name="BtnRewardedVideo" type="Button" parent="CanvasLayer"]
+margin_left = 190.0
+margin_top = 340.0
+margin_right = 371.0
+margin_bottom = 360.0
+disabled = true
+toggle_mode = true
+text = "Show Rewarded Video"
+
+[node name="LblRewarded" type="Label" parent="CanvasLayer"]
+margin_top = 250.0
+margin_right = 534.0
+margin_bottom = 264.0
+text = "REWARDED VIDEO RETURN"
+align = 1
+
+[connection signal="toggled" from="CanvasLayer/BtnBanner" to="." method="_on_BtnBanner_toggled"]
+[connection signal="pressed" from="CanvasLayer/BtnInterstitial" to="." method="_on_BtnInterstitial_pressed"]
+[connection signal="pressed" from="CanvasLayer/BtnRewardedVideo" to="." method="_on_BtnRewardedVideo_pressed"]

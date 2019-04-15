@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/A tricky puzzle.ogg-90f200ec36418fd66fb9b73e962c0ca3.oggstr"
+
+[deps]
+
+source_file="res://sound/background/A tricky puzzle.ogg"
+dest_files=[ "res://.import/A tricky puzzle.ogg-90f200ec36418fd66fb9b73e962c0ca3.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0
