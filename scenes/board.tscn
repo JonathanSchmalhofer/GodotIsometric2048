@@ -1,6 +1,7 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://iso_ground_tileset_kenney.tres" type="TileSet" id=1]
+[ext_resource path="res://scenes/iso_ground_tileset_kenney.tres" type="TileSet" id=1]
+
 
 [node name="board" type="TileMap"]
 mode = 1

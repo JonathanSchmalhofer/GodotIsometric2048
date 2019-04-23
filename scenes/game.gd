@@ -1,7 +1,7 @@
 extends Node2D
 
 
-const GameMechanic = preload("res://game_mechanics_2048.gd")
+const GameMechanic = preload("res://scenes/game_mechanics_2048.gd")
 onready var SwipeDirections = preload("res://addons/swipe-detector/directions.gd").new()
 
 # TODO

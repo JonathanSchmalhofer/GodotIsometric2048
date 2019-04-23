@@ -12,7 +12,7 @@ _global_script_classes=[ {
 "base": "Node2D",
 "class": "GameMechanics2048",
 "language": "GDScript",
-"path": "res://game_mechanics_2048.gd"
+"path": "res://scenes/game_mechanics_2048.gd"
 }, {
 "base": "KinematicBody2D",
 "class": "Pawn",
