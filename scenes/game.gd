@@ -1,8 +1,15 @@
 extends Node2D
 
-#const PawnTemplate = preload("res://scenes/pawn.tscn")
+
 const GameMechanic = preload("res://game_mechanics_2048.gd")
 onready var SwipeDirections = preload("res://addons/swipe-detector/directions.gd").new()
+
+# TODO
+#  -do not copy these values here, rather try to access values from game mechanics or on different way (only one shared definition)
+const kLeftDirection : int = 0
+const kUpDirection : int = 1
+const kRightDirection : int = 2
+const kDownDirection : int = 3
 
 func _ready():
 	var game_mechanic = GameMechanic.new()
@@ -12,10 +19,6 @@ func _ready():
 	for child in $board.get_children():
 		if child is GameMechanics2048:
 			child.initialize(0)
-	#$board.add_child(pawn_object)
-	#for child in $board.get_children():
-	#	if child is Pawn:
-	#		child.initialize(self)
 
 # Swiping
 
@@ -40,17 +43,46 @@ func _on_SwipeDetector_swiped( gesture ):
 	else: if(SwipeDirections.DIRECTION_UP_LEFT == gesture.get_direction()):
 		_move_pawns_up_left()
 
+# Isometric Grid Conversion:
+#
+# Isometric  | Grid
+# =================
+#  DownLeft  | Left
+#  DownRight | Down
+#  UpLeft    | Up
+#  UpRight   | Right
+#
+# ==========================
+#
+#        ▴ Right
+#        |
+#     [][][][]
+# Up  [][][][] Down
+# <-- [][][][] -->
+#     [][][][]
+#        |
+#        ▾ Left
+
 func _move_pawns_down_right():
-	pass
+	for child in $board.get_children():
+		if child is GameMechanics2048:
+			child.squeezeAndMerge(kDownDirection)
+			return
 
 func _move_pawns_down_left():
 	for child in $board.get_children():
 		if child is GameMechanics2048:
-			child.left()
+			child.squeezeAndMerge(kLeftDirection)
 			return
 
 func _move_pawns_up_right():
-	pass
+	for child in $board.get_children():
+		if child is GameMechanics2048:
+			child.squeezeAndMerge(kRightDirection)
+			return
 
 func _move_pawns_up_left():
-	pass
+	for child in $board.get_children():
+		if child is GameMechanics2048:
+			child.squeezeAndMerge(kUpDirection)
+			return

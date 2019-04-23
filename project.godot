@@ -19,7 +19,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scenes/pawn.gd"
 }, {
-"base": "Pawn",
+"base": "Node2D",
 "class": "Tile",
 "language": "GDScript",
 "path": "res://scenes/tile.gd"
