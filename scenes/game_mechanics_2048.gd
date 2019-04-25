@@ -70,26 +70,26 @@ func squeezeAndMerge(direction: int) -> void:
 		addNewTileAfterMove = squeeze(tilesetCoordinates) or addNewTileAfterMove # or-operand is required as some columns might not change. Yet, if one column changes a new tile shall be added.
 		addNewTileAfterMove = merge(tilesetCoordinates) or addNewTileAfterMove
 		addNewTileAfterMove = squeeze(tilesetCoordinates) or addNewTileAfterMove #  by merging, some gaps could have appeared that should not exist
-		#### PERFORM ANIMATIONS
-		# TODO
-		# Move Animation into separare Function
-#		for animationIndex in range(_slideAnimations.size()):
-#			#print(_slideAnimations[animationIndex])
-#			#print(_tiles[0][0].getPawn())
-#			_tiles[_slideAnimations[animationIndex][0]][_slideAnimations[animationIndex][1]].movePawnTo(Vector2(_slideAnimations[animationIndex][2],_slideAnimations[animationIndex][3]))
-#			#print(_tiles[0][0].getPawn())
-#			#print(_tiles[_slideAnimations[animationIndex][0]][_slideAnimations[animationIndex][1]].getPawn())
-#			_tiles[_slideAnimations[animationIndex][2]][_slideAnimations[animationIndex][3]].setPawn(_tiles[_slideAnimations[animationIndex][0]][_slideAnimations[animationIndex][1]].getPawn())
-#			#_tiles[_slideAnimations[animationIndex][0]][_slideAnimations[animationIndex][1]].setPawn(null)
-#			#print(_tiles[_slideAnimations[animationIndex][2]][_slideAnimations[animationIndex][3]].getPawn())
-#		_slideAnimations.clear()
-#		for child in self._tilemap.get_node("YSort").get_children():
-#			print("Child")
-#			if child is Pawn:
-#				print(self._tilemap.world_to_map(child.position))
+	#### PERFORM ANIMATIONS
+	# TODO
+	# Move animation into separare function
+	for animationIndex in range(_slideAnimations.size()):
+		print(_slideAnimations[animationIndex])
+		self.getPawnAt(Vector2(0,0))
+		#self.getPawnAt(Vector2(_slideAnimations[animationIndex][0],_slideAnimations[animationIndex][1])).movePawnTo(Vector2(_slideAnimations[animationIndex][2],_slideAnimations[animationIndex][3]))
+	_slideAnimations.clear()
+	#for child in self._tilemap.get_node("YSort").get_children():
+	#	print("Child")
+	#	if child is Pawn:
+	#		print(self._tilemap.world_to_map(child.position))
 	if (addNewTileAfterMove == true):
 		addRandomPawn()
 	self.printBoard()
+
+func getPawnAt(position: Vector2) -> void:
+	for child in self._tilemap.get_node("YSort").get_children():
+		if child is Pawn:
+			print(self._tilemap.world_to_map(child.position))
 
 func getCoordinatesOfColumnWithXEqual(index: int):
 	var result = []
@@ -158,8 +158,10 @@ func squeeze(coordinateList: Array) -> bool:
 				currentPointer -= 1
 				somethingChanged = true
 				# only add animations where start and goal are different
-			if (coordinateList[idx].x != coordinateList[currentPointer+1].x and coordinateList[idx].y != coordinateList[currentPointer+1].x):
-				_slideAnimations.append([coordinateList[idx].x, coordinateList[idx].y,coordinateList[currentPointer+1].x,coordinateList[currentPointer+1].y]) # Order is [startX, startY, goalX, goalY]; +1 because currentPointer always get decreased before exiting the loop
+			#if (coordinateList[idx].x != coordinateList[currentPointer+1].x and coordinateList[idx].y != coordinateList[currentPointer+1].x):
+			if (somethingChanged):
+				# Order is [startX, startY, goalX, goalY]
+				_slideAnimations.append([coordinateList[idx].x, coordinateList[idx].y,coordinateList[currentPointer+1].x,coordinateList[currentPointer+1].y]) # +1 because currentPointer always get decreased before exiting the loop
 	return somethingChanged
 
 func merge(coordinateList: Array) -> bool:
