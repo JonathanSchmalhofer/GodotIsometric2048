@@ -11,6 +11,8 @@ var _win : = false
 var _loose : = false
 var _tiles : = []
 var _slideAnimations : = []
+var _mergeAnimations : = []
+var _removeAnimations := []
 
 onready var _tilemap : = get_node("/root/game/board")
 const kMapSize : = 4
@@ -68,28 +70,60 @@ func squeezeAndMerge(direction: int) -> void:
 			kDownDirection:
 				tilesetCoordinates = getCoordinatesOfReverseRowWithYEqual(i)
 		addNewTileAfterMove = squeeze(tilesetCoordinates) or addNewTileAfterMove # or-operand is required as some columns might not change. Yet, if one column changes a new tile shall be added.
+		#print("Squeeze 1")
+		#self.printBoard()
 		addNewTileAfterMove = merge(tilesetCoordinates) or addNewTileAfterMove
+		#rint("Merge")
+		#self.printBoard()
 		addNewTileAfterMove = squeeze(tilesetCoordinates) or addNewTileAfterMove #  by merging, some gaps could have appeared that should not exist
+		#print("Squeeze 2")
+		#self.printBoard()
+		print("Slides: " + str(_slideAnimations.size()))
 	#### PERFORM ANIMATIONS
 	# TODO
-	# Move animation into separare function
+	# Move all animations into separare function
+	var animationPawn : Pawn = null
+	
+	# Sliding
+	# TODO
+	#  -merge sliding animations, if there is something like [a,b,c,d] and [c,d,e,f] --> to [a,b,e,f]
 	for animationIndex in range(_slideAnimations.size()):
 		print(_slideAnimations[animationIndex])
-		self.getPawnAt(Vector2(0,0))
-		#self.getPawnAt(Vector2(_slideAnimations[animationIndex][0],_slideAnimations[animationIndex][1])).movePawnTo(Vector2(_slideAnimations[animationIndex][2],_slideAnimations[animationIndex][3]))
+		animationPawn = self.getPawnAt(Vector2(_slideAnimations[animationIndex][0],_slideAnimations[animationIndex][1]))
+		if null != animationPawn:
+			animationPawn.moveTo(Vector2(_slideAnimations[animationIndex][2],_slideAnimations[animationIndex][3]))
+			print("Moving from: (" + str(_slideAnimations[animationIndex][0]) + "," + str(_slideAnimations[animationIndex][1]) + ") to (" + str(_slideAnimations[animationIndex][2]) + "," + str(_slideAnimations[animationIndex][3]) + ")")
 	_slideAnimations.clear()
+	
+	# Merging
+	# TODO
+	#  -implement merging animation
+	_mergeAnimations.clear()
+	
+	# Removing
+	for animationIndex in range(_removeAnimations.size()):
+		#print(_slideAnimations[animationIndex])
+		animationPawn = self.getPawnAt(Vector2(_removeAnimations[animationIndex][0],_removeAnimations[animationIndex][1]))
+		if null != animationPawn:
+			self.getPawnAt(Vector2(_removeAnimations[animationIndex][0],_removeAnimations[animationIndex][1])).queue_free()
+			print("Removing: (" + str(_removeAnimations[animationIndex][0]) + "," + str(_removeAnimations[animationIndex][1]) + ")")
+	_removeAnimations.clear()
+	
 	#for child in self._tilemap.get_node("YSort").get_children():
 	#	print("Child")
 	#	if child is Pawn:
 	#		print(self._tilemap.world_to_map(child.position))
-	if (addNewTileAfterMove == true):
-		addRandomPawn()
+	#if (addNewTileAfterMove == true):
+	#	addRandomPawn()
 	self.printBoard()
+	print("#######################")
 
-func getPawnAt(position: Vector2) -> void:
+func getPawnAt(position: Vector2) -> Pawn:
 	for child in self._tilemap.get_node("YSort").get_children():
 		if child is Pawn:
-			print(self._tilemap.world_to_map(child.position))
+			if position == self._tilemap.world_to_map(child.position):
+				return child
+	return null
 
 func getCoordinatesOfColumnWithXEqual(index: int):
 	var result = []
@@ -145,21 +179,20 @@ func getEmptyTiles():
 func squeeze(coordinateList: Array) -> bool:
 	var somethingChanged  = false
 	for idx in range(coordinateList.size()): # start at second element (via currentPointer) and shift upward
+		var currentChanged = false
 		var currentPointer = idx - 1
 		if !(_tiles[coordinateList[idx].x][coordinateList[idx].y].empty()): # only move non-empty tiles
 			while currentPointer >= 0 && _tiles[coordinateList[currentPointer].x][coordinateList[currentPointer].y].empty():
 				#### TODO
 				# - put in separate function
-				# - add move function for pawns as well
 				var oldValue : int = _tiles[coordinateList[currentPointer+1].x][coordinateList[currentPointer+1].y].getValue()
-				_tiles[coordinateList[currentPointer].x][coordinateList[currentPointer].y].setValue( oldValue )
-				_tiles[coordinateList[currentPointer+1].x][coordinateList[currentPointer+1].y].setValue( 0 )
-				####
+				_tiles[coordinateList[currentPointer].x][coordinateList[currentPointer].y].setValue(oldValue)
+				_tiles[coordinateList[currentPointer+1].x][coordinateList[currentPointer+1].y].setValue(0)
 				currentPointer -= 1
 				somethingChanged = true
-				# only add animations where start and goal are different
-			#if (coordinateList[idx].x != coordinateList[currentPointer+1].x and coordinateList[idx].y != coordinateList[currentPointer+1].x):
-			if (somethingChanged):
+				currentChanged = true
+			# only add animations when this (!) pawn has been moved at least once
+			if (currentChanged):
 				# Order is [startX, startY, goalX, goalY]
 				_slideAnimations.append([coordinateList[idx].x, coordinateList[idx].y,coordinateList[currentPointer+1].x,coordinateList[currentPointer+1].y]) # +1 because currentPointer always get decreased before exiting the loop
 	return somethingChanged
@@ -176,4 +209,9 @@ func merge(coordinateList: Array) -> bool:
 				_tiles[coordinateList[idx].x][coordinateList[idx].y].setValue(2 * _tiles[coordinateList[idx].x][coordinateList[idx].y].getValue())
 				_tiles[coordinateList[idx+1].x][coordinateList[idx+1].y].setValue(0)
 				somethingChanged = true
+				# Animation
+				# Order is [posX, posY]
+				_mergeAnimations.append([coordinateList[idx].x,coordinateList[idx].y])
+				# Order is [posX, posY]
+				_removeAnimations.append([coordinateList[idx+1].x,coordinateList[idx+1].y])
 	return somethingChanged
